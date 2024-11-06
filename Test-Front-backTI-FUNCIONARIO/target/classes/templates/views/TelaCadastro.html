@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../assets/TelaCadastro.css">
+	<script src="https://kit.fontawesome.com/53b517209e.js" crossorigin="anonymous"></script>
+	<title>Login/Cadastro</title>
+</head>
+
+<body>
+
+<div class="container" id="container">
+	<div class="form-container sign-up-container">
+		<form action="#">
+			<h1>Criar Conta</h1>
+			<span>ou use seu email para registrar</span>
+			<div class="row-input">
+				<input type="text" placeholder="Nome" name="nome" />
+				<input type="number" placeholder="CPF" name="cpf" />
+			</div>
+			<div class="row-input">
+				<input type="number" placeholder="Telefone" name="telefone" />
+				<input type="text" placeholder="Cidade" name="cidade" />
+			</div>
+			<div class="row-input">
+				<input type="number" placeholder="CEP" name="cep" />
+				<input type="text" placeholder="Rua" name="rua" />
+			</div>
+			<div class="row-input">
+				<input type="number" placeholder="Número" name="numero" />
+				<input type="text" placeholder="Complemento" name="complemento" />
+			</div>
+			<input type="email" placeholder="Email" name="email" />
+			<input type="password" placeholder="Senha" name="senha" />
+			<button type="submit">Registrar</button>
+		</form>
+	</div>
+	<div class="form-container sign-in-container">
+		<form action="#">
+			<h1>Entrar</h1>
+			<span>ou use sua conta</span>
+			<input type="email" id="email" placeholder="Email" />
+			<input type="password" id="password" placeholder="Senha" />
+			<div class="wrapper">
+				<input type="radio" name="select" id="option-1" checked>
+				<input type="radio" name="select" id="option-2">
+				<label for="option-1" class="option option-1">
+					<div class="dot"></div>
+					<span>Funcionário</span>
+				</label>
+				<label for="option-2" class="option option-2">
+					<div class="dot"></div>
+					<span>Paciente</span>
+				</label>
+			</div>
+			<a href="#">Esqueceu sua senha?</a>
+			<button type="submit">Entrar</button>
+		</form>
+	</div>
+	<div class="overlay-container">
+		<div class="overlay">
+			<div class="overlay-panel overlay-left">
+				<h1>Bem vindo de volta!</h1>
+				<p>Para se manter conectado conosco, faça login com suas informações pessoais</p>
+				<button class="ghost" id="signIn">Entrar</button>
+			</div>
+			<div class="overlay-panel overlay-right">
+				<h1>Hello, Moto!</h1>
+				<p>Insira seus dados pessoais e comece sua jornada conosco</p>
+				<button class="ghost" id="signUp">Registrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<footer>
+	<p>
+		HealthSync - Soluções Médicas
+	</p>
+</footer>
+
+<script>
+	// Correção de URL no fetch
+	const signUpButton = document.getElementById('signUp');
+	const signInButton = document.getElementById('signIn');
+	const container = document.getElementById('container');
+
+	signUpButton.addEventListener('click', () => {
+		container.classList.add("right-panel-active");
+	});
+
+	signInButton.addEventListener('click', () => {
+		container.classList.remove("right-panel-active");
+	});
+
+	async function registerUser(event) {
+		event.preventDefault();
+		const formData = new FormData(event.target);
+		const data = {
+			nome: formData.get('nome'),
+			cpf: formData.get('cpf'),
+			telefone: formData.get('telefone'),
+			cidade: formData.get('cidade'),
+			cep: formData.get('cep'),
+			rua: formData.get('rua'),
+			numero: formData.get('numero'),
+			complemento: formData.get('complemento'),
+			email: formData.get('email'),
+			senha: formData.get('senha')
+		};
+
+		try {
+			const response = await fetch('http://localhost:8080/paciente', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(data)
+			});
+			const result = await response.json();
+			alert(result.message || 'Usuário registrado com sucesso!');
+		} catch (error) {
+			alert('Erro ao registrar usuário.');
+		}
+	}
+
+	async function loginUser(event) {
+		event.preventDefault();
+		const email = document.getElementById('email').value;
+		const senha = document.getElementById('password').value;
+
+		const tipo = document.querySelector('input[name="select"]:checked').id;
+		const loginEndpoint = tipo === 'option-1' ? '/login' : '/login-paciente';
+
+		try {
+			const response = await fetch(`http://localhost:8080${loginEndpoint}`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ email, password: senha })
+			});
+
+			if (!response.ok) {
+				const errorDetails = await response.text();
+				console.error('Detalhes do erro:', errorDetails);
+				throw new Error('Erro ao fazer login. Verifique suas credenciais.');
+			}
+
+			const data = await response.json();
+			localStorage.setItem('jwtToken', data.accessToken);
+			alert('Login realizado com sucesso!');
+			window.location.href = 'TelaConsultar.html';
+		} catch (error) {
+			console.error('Erro:', error);
+			alert(error.message);
+		}
+	}
+
+	// Adiciona o evento no formulário de login
+	document.querySelector('.sign-in-container form').addEventListener('submit', loginUser);
+	document.querySelector('.sign-up-container form').addEventListener('submit', registerUser);
+
+</script>
+
+</body>
+
+</html>

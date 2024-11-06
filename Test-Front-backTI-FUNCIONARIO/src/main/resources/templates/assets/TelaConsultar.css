@@ -1,0 +1,97 @@
+ * {
+     padding: 0;
+     margin: 0;
+     border: 0;
+     box-sizing: border-box;
+ }
+
+ .roboto-bold-italic {
+     font-family: "Roboto", sans-serif;
+     font-weight: 700;
+     font-style: italic;
+ }
+ 
+ /* Start header */
+
+ #header {
+     width: 100%;
+     display: flex;
+     justify-content: space-between;
+ }
+
+ .perfil {
+    background-color: aliceblue;
+    height: 50px; /* Tamanho maior para o círculo */
+    width: 50px;
+    border-radius: 50%; /* Para garantir que fique completamente redondo */
+    display: flex; /* Flexbox para centralizar o conteúdo */
+    align-items: center; /* Centraliza verticalmente */
+    justify-content: center; /* Centraliza horizontalmente */
+    overflow: hidden; /* Para que a imagem não saia dos limites do círculo */
+ }
+
+
+ /*End header */
+
+ /*Start Aside */
+ /* Define o estilo do link para alinhar os itens */
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+    color: #0066ff; /* cor do texto e ícone */
+
+}
+
+aside ul li a:hover {
+    color: #0066ff !important;
+}
+
+/* Define a largura fixa e o espaçamento dos ícones */
+.icon-align {
+    width: 20px; /* largura fixa para os ícones */
+    margin-right: 10px; /* espaçamento entre ícone e texto */
+    text-align: center; /* centraliza o ícone dentro do espaço */
+    font-size: 1.2em; /* ajuste de tamanho do ícone */
+}
+
+/* End aside */
+
+
+/*Start main */
+
+
+#title-main {
+     width: 100%;
+}
+
+#search-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+#search-btn {
+    border-radius: 8px;
+    width: 100px;
+}
+
+#cpf-search{
+    width: 400px;
+}
+
+#btn-add-paciente a{
+   text-decoration: none;
+}
+
+#btn-add-paciente {
+    border-radius: 8px;
+    height: 50px;
+}
+
+#title-main button:hover {
+    background-color: rgb(74, 131, 253)  !important;
+}
+
+
+/*End main */

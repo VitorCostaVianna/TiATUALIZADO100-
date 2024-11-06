@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TelaCadastro</title>
+    <script src="https://kit.fontawesome.com/1a985785a6.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="../assets/TelaConsultarFuncionarios.css">
+</head>
+<body>
+<div class="container-fluid">
+    <header id="header" class="p-4">
+        <h1 class="h2 text-primary roboto-bold-italic">HealthSync</h1>
+        <div class="perfil">
+            <a href="TelaCadastro.html"><i class="fa-solid fa-user"></i></a>
+        </div>
+    </header>
+    <div class="row">
+        <aside class="col-2 min-vh-100">
+            <nav>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#"><i class="fa-solid fa-calendar-days"></i> Agenda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-dark" href="TelaConsultar.html"><i class="fa-solid fa-users"></i> Pacientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#"><i class="fa-solid fa-heart-pulse"></i> Médicos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#"><i class="fa-solid fa-comment-medical"></i> Feedbacks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#"><i class="fa-solid fa-right-to-bracket"></i> Sair</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="col-10">
+            <h3>Diretório de Funcionários</h3>
+            <div class="mt-4 d-flex justify-content-between">
+                <div>
+                    <input type="text" id="cpf-search" placeholder="Buscar por CPF" class="form-control" />
+                    <button id="search-btn" class="btn btn-primary mt-2">Pesquisar</button>
+                </div>
+                <button id="btn-add-funcionario" class="btn btn-primary" onclick="window.location.href='criar_funcionario.html'">
+                    <i class="fa-solid fa-plus"></i> Adicionar Funcionário
+                </button>
+            </div>
+            <table class="table table-bordered table-hover mt-4">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>E-mail</th>
+                    <th>Cidade</th>
+                    <th>CPF</th>
+                    <th>Cargo</th>
+                    <th>Especialidade</th>
+                    <th>Salario</th>
+                    <th>Ações</th>
+                </tr>
+                </thead>
+                <tbody id="funcionarios-tbody">
+                <!-- Dados dos funcionários -->
+                </tbody>
+            </table>
+        </main>
+    </div>
+    <footer class="p-2">
+        <h2>oi</h2>
+    </footer>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('http://localhost:8080/funcionario')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('funcionarios-tbody');
+                tbody.innerHTML = '';
+                data.forEach((funcionario, index) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <th scope="row">${index + 1}</th>
+                        <td>${funcionario.nome}</td>
+                        <td>${funcionario.telefone}</td>
+                        <td>${funcionario.email}</td>
+                        <td>${funcionario.cidade}</td>
+                        <td>${funcionario.cpf}</td>
+                        <td>${funcionario.cargo}</td>
+                        <td>${funcionario.especialidade}</td>
+                        <td>${funcionario.salario}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" onclick="update('${funcionario.nome}', '${funcionario.email}', '${funcionario.cidade}', '${funcionario.cpf}', '${funcionario.telefone}', '${funcionario.cargo}', '${funcionario.especialidade}', '${funcionario.salario}', '${funcionario.password}')">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="confirmExclusion('${funcionario.nome}', '${funcionario.cpf}')">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(error => console.error('Erro ao buscar funcionários:', error));
+    });
+
+    function confirmExclusion(nome, cpf) {
+        window.location.href = `excluir_funcionario.html?nome=${encodeURIComponent(nome)}&cpf=${encodeURIComponent(cpf)}`;
+    }
+
+    function update(nome, email, cidade, cpf, telefone, cargo, especialidade, salario, password) {
+        window.location.href = `atualizar_funcionario.html?nome=${encodeURIComponent(nome)}&email=${encodeURIComponent(email)}&cidade=${encodeURIComponent(cidade)}&cpf=${encodeURIComponent(cpf)}&cargo=${encodeURIComponent(cargo)}&especialidade=${encodeURIComponent(especialidade)}&salario=${encodeURIComponent(salario)}&password=${encodeURIComponent(password)}&telefone=${encodeURIComponent(telefone)}`;
+    }
+
+    document.getElementById('search-btn').addEventListener('click', function() {
+        const cpf = document.getElementById('cpf-search').value.trim();
+        if (!cpf) {
+            alert('Por favor, insira um CPF para pesquisa.');
+            return;
+        }
+        fetch(`http://localhost:8080/funcionario/cpf/${cpf}`)
+            .then(response => {
+                if (!response.ok) throw new Error('Funcionário não encontrado.');
+                return response.json();
+            })
+            .then(funcionario => {
+                const tbody = document.getElementById('funcionarios-tbody');
+                tbody.innerHTML = '';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <th scope="row">1</th>
+                    <td>${funcionario.nome}</td>
+                    <td>${funcionario.telefone}</td>
+                    <td>${funcionario.email}</td>
+                    <td>${funcionario.cidade}</td>
+                    <td>${funcionario.cpf}</td>
+                    <td>${funcionario.cargo}</td>
+                    <td>${funcionario.especialidade}</td>
+                    <td>${funcionario.salario}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="update('${funcionario.nome}', '${funcionario.email}', '${funcionario.cidade}', '${funcionario.cpf}', '${funcionario.telefone}', '${funcionario.cargo}', '${funcionario.especialidade}', '${funcionario.salario}', '${funcionario.password}')">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="confirmExclusion('${funcionario.nome}', '${funcionario.cpf}')">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            })
+            .catch(error => alert(error.message));
+    });
+</script>
+</body>
+</html>

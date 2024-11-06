@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthSync - Criar Paciente</title>
+    <script src="https://kit.fontawesome.com/1a985785a6.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="../assets/telaCriar.css">
+</head>
+
+<body>
+<div class="container-fluid">
+
+    <header id="header" class="p-4">
+        <div class="nome-projeto">
+            <h1 class="h2 text-primary roboto-bold-italic">HealthSync</h1>
+        </div>
+        <div class="perfil">
+            <i class="fa-solid fa-user"></i>
+        </div>
+    </header>
+
+    <div id="aside-main-toogether" class="row">
+        <aside id="aside" class="col-2 min-vh-100">
+            <nav id="nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#"><i class="fa-solid fa-calendar-days icon-align"></i>
+                            Agenda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-dark" aria-current="page" href="#"><i
+                                class="fa-solid fa-users icon-align "></i> Pacientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#"><i class="fa-solid fa-heart-pulse icon-align"></i>
+                            Médicos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#"><i
+                                class="fa-solid fa-comment-medical icon-align"></i> Feedbacks</a>
+                    </li>
+                    <br><br>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#"><i
+                                class="fa-solid fa-right-to-bracket icon-align"></i> Sair</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main id="main" class="col-10 m p-4">
+            <h2 class="mb-4">Criar Paciente</h2>
+            <div class="formulario">
+                <form id="form-criar-paciente">
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="nome" placeholder="Digite o nome" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefone" class="form-label">Telefone</label>
+                        <input type="tel" class="form-control" id="telefone" pattern="[0-9]{9,}"
+                               placeholder="Digite o telefone (mínimo 9 dígitos)" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="Digite o email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cpf" class="form-label">CPF</label>
+                        <input type="text" class="form-control" id="cpf" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}"
+                               placeholder="Digite o CPF (ex: 000.000.000-00)" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cep" class="form-label">CEP</label>
+                        <input type="text" class="form-control" id="cep" pattern="\d{5}-\d{3}"
+                               placeholder="Digite o CEP (ex: 00000-000)" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cidade" class="form-label">Cidade</label>
+                        <input type="text" class="form-control" id="cidade"
+                               placeholder="Digite sua cidade" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="rua" class="form-label">Rua</label>
+                        <input type="text" class="form-control" id="rua" placeholder="Digite o nome da rua"
+                               required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="numero" class="form-label">Número</label>
+                        <input type="number" class="form-control" id="numero" placeholder="Digite o número"
+                               required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="complemento" class="form-label">Complemento</label>
+                        <input type="text" class="form-control" id="complemento" placeholder="Digite o complemento">
+                    </div>
+
+                 
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="button" class="btn btn-secondary" onclick="window.history.back()">Voltar</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+
+    <!-- JavaScript para requisição POST -->
+    <script>
+        document.getElementById('form-criar-paciente').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevenir o comportamento padrão do form
+
+            // Capturar os dados do formulário
+            const paciente = {
+                nome: document.getElementById('nome').value,
+                telefone: document.getElementById('telefone').value,
+                email: document.getElementById('email').value,
+                cpf: document.getElementById('cpf').value,
+                cep: document.getElementById('cep').value,
+                cidade: document.getElementById('cidade').value,
+                rua: document.getElementById('rua').value,
+                numero: document.getElementById('numero').value,
+                complemento: document.getElementById('complemento').value
+            };
+
+            // Fazer a requisição POST
+            fetch('http://localhost:8080/paciente', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(paciente)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Paciente criado com sucesso!');
+                    window.location.href = 'telaConsultar.html'; // Redireciona para a página de consulta
+                } else {
+                    alert('Erro ao criar o paciente.');
+                }
+            })
+            .catch(error => console.error('Erro:', error));
+        });
+    </script>
+</div>
+</body>
+
+</html>
